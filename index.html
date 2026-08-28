@@ -74,10 +74,15 @@
     border:1px solid rgba(228,199,124,.45);
     border-radius: 50% 50% 4px 4px / 28% 28% 4px 4px;
   }
-  .monogram{
-    font-family:'Aref Ruqaa',serif; font-size:52px; color:var(--gold-light);
-    line-height:1; margin-bottom:14px; letter-spacing:2px;
+  .splash-photo{
+    width:118px;height:118px;border-radius:50%;margin:0 auto 16px;
+    border:2.5px solid var(--gold-light); box-shadow:0 0 0 6px rgba(228,199,124,.15);
+    overflow:hidden; display:flex; align-items:center; justify-content:center;
+    color:var(--gold-light); font-size:12px; text-align:center; padding:8px;
   }
+  .splash-photo img{ width:100%;height:100%;object-fit:cover; }
+  .splash-photo .photo-fallback{ display:none; }
+  .splash-photo.photo-missing .photo-fallback{ display:block; }
   .splash-label{ font-size:13px; letter-spacing:4px; color:var(--gold-light); margin-bottom:6px; }
   .splash-names{ font-family:'Aref Ruqaa',serif; font-size:40px; margin:8px 0 18px; }
   .splash-tap{
@@ -86,11 +91,18 @@
   }
   @keyframes pulse{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
 
-  html{ scroll-behavior:smooth; scroll-snap-type: y proximity; }
+  html{ scroll-behavior:smooth; scroll-snap-type: y mandatory; }
   /* ---------- main content ---------- */
   #app{ max-width:560px; margin:0 auto; padding:0 20px 110px; position:relative; z-index:2; }
 
-  .section{ padding:52px 0; text-align:center; scroll-snap-align:start; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; }
+  .section{
+    padding:52px 0; text-align:center;
+    scroll-snap-align:start; scroll-snap-stop:always;
+    min-height:100vh; min-height:100dvh;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s ease, transform .9s ease; }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
   .divider{
     width:90px;height:2px;margin:22px auto;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
@@ -156,13 +168,24 @@
   .btn.outline{ background:transparent; color:var(--wine); border:1.5px solid var(--wine); }
 
   /* countdown */
-  .countdown{ display:flex; justify-content:center; gap:10px; margin:20px 0 4px; flex-wrap:wrap; }
+  .countdown{ display:flex; justify-content:center; gap:12px; margin:22px 0 6px; flex-wrap:wrap; }
   .cd-box{
-    background:var(--wine); color:var(--ivory); border-radius:10px;
-    width:72px; padding:12px 0; box-shadow:var(--shadow);
+    position:relative;
+    background:linear-gradient(160deg, var(--wine) 0%, var(--wine-dark) 100%);
+    color:var(--ivory); border-radius:16px;
+    width:76px; padding:16px 0 14px;
+    border:1px solid rgba(228,199,124,.55);
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.12);
   }
-  .cd-num{ font-size:26px; font-weight:800; font-family:'Cairo',sans-serif; }
-  .cd-label{ font-size:11px; opacity:.85; margin-top:2px; }
+  .cd-box::after{
+    content:""; position:absolute; left:14px; right:14px; bottom:9px; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(228,199,124,.6),transparent);
+  }
+  .cd-num{
+    font-size:30px; font-weight:800; font-family:'Cairo',sans-serif;
+    color:var(--gold-light); text-shadow:0 2px 6px rgba(0,0,0,.25);
+  }
+  .cd-label{ font-size:11px; opacity:.9; margin-top:6px; letter-spacing:1px; }
 
   /* rsvp */
   .stepper{ display:flex; align-items:center; justify-content:center; gap:18px; margin:18px 0; }
@@ -278,6 +301,7 @@
   .admin-row b{ color:var(--wine-dark); }
   .admin-empty{ font-size:13px; color:var(--ink-soft); margin-top:8px; }
   .admin-audio{ width:100%; margin-top:6px; }
+  .admin-audio-frame{ width:100%; height:80px; border:0; border-radius:8px; margin-top:6px; }
   .admin-stat{ text-align:center; font-size:14px; color:var(--ink-soft); margin-bottom:6px; }
 </style>
 </head>
@@ -288,7 +312,11 @@
 <!-- splash -->
 <div id="splash" onclick="openInvite()">
   <div class="splash-frame">
-    <div class="monogram">أ ﻭ س</div>
+    <!-- صورة العروسين في شاشة الافتتاح: نفس ملف assets/photos/couple.jpg -->
+    <div class="splash-photo">
+      <img src="assets/photos/couple.jpg" alt="أمجد وسمر" onerror="this.parentElement.classList.add('photo-missing'); this.remove();">
+      <span class="photo-fallback">📷<br>couple.jpg</span>
+    </div>
     <div class="splash-label">دعوة زفاف</div>
     <div class="splash-names">أمجد &amp; سمر</div>
     <div class="splash-tap">اضغط في أي مكان للفتح</div>
@@ -477,7 +505,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- عنصر تشغيل موسيقى الخلفية: ارفع الملف باسم assets/music/background.mp3 -->
-<audio id="bgMusic" src="assets/music/background.mp3" loop preload="none"></audio>
+<audio id="bgMusic" src="assets/music/background.mp3" loop preload="auto"></audio>
 
 <script>
 /* =========================================================================
@@ -488,7 +516,7 @@
    على موقعكم، اعملوا Google Sheet + Google Apps Script (الشرح في آخر
    الرسالة اللي بعتهالكم) وحطوا رابط الـ Web App هنا:
    ========================================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzhvaeqpCnd5acRp2i6OoOY6aBuP1Ews7yLo70spviI9ISQMSwvGws9lpS9vwDR1FnQ/exec'; // مثال: 'https://script.google.com/macros/s/AKfycbx.../exec'
+const GAS_URL = ''; // مثال: 'https://script.google.com/macros/s/AKfycbx.../exec'
 
 function useGas(){ return !!GAS_URL && GAS_URL.startsWith('http'); }
 
@@ -525,7 +553,7 @@ function openInvite(){
 }
 
 /* ---------------- event date ---------------- */
-const EVENT_DATE = new Date(2026, 8, 2, 20, 0, 0); // 2 Sep 2026, 8:00 PM
+const EVENT_DATE = new Date(2026, 8, 2, 20, 0, 0);
 
 (function setDateLine(){
   const weekday = new Intl.DateTimeFormat('ar-EG', { weekday:'long' }).format(EVENT_DATE);
@@ -1002,7 +1030,9 @@ async function loadAdminVoice(){
     if(useGas()){
       const rows = await gasGet('Voice'); // [[timestamp,name,driveUrl], ...]
       rows.slice().reverse().forEach(r=>{
-        html += `<div class="admin-row"><b>${escapeHtml(String(r[1]))}</b><br><a href="${r[2]}" target="_blank" rel="noopener">فتح التسجيل ▶️</a></div>`;
+        const fileId = driveFileId(String(r[2]));
+        const src = fileId ? `https://drive.google.com/file/d/${fileId}/preview` : String(r[2]);
+        html += `<div class="admin-row"><b>${escapeHtml(String(r[1]))}</b><iframe class="admin-audio-frame" src="${src}" allow="autoplay" loading="lazy"></iframe></div>`;
       });
     } else {
       const res = await window.storage.list('voice:', true);
@@ -1020,6 +1050,16 @@ async function loadAdminVoice(){
     }
     el.innerHTML = html || '<div class="admin-empty">لسه مفيش رسائل صوتية</div>';
   }catch(e){ el.innerHTML = '<div class="admin-empty">تعذّر تحميل البيانات</div>'; }
+}
+// بيسحب Google Drive File ID سواء الرابط كان uc?export=view&id=... أو file/d/.../view أو الـ ID مجرد لوحده
+function driveFileId(s){
+  if(!s) return null;
+  const m1 = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m1) return m1[1];
+  const m2 = s.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m2) return m2[1];
+  if(/^[a-zA-Z0-9_-]{10,}$/.test(s)) return s;
+  return null;
 }
 
 async function loadAdminPhotos(){
