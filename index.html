@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>دعوة زفاف أمجد وسمر</title>
-<meta name="description" content="دعوة حضور حفل زفاف أمجد وسمر - ١ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود">
+<meta name="description" content="دعوة حضور حفل زفاف أمجد وسمر - ٢ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود">
 <meta property="og:title" content="دعوة زفاف أمجد وسمر">
-<meta property="og:description" content="١ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود">
+<meta property="og:description" content="٢ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -323,7 +323,7 @@
   <div class="section" id="countdownSection" style="padding-top:0;">
     <div class="card arch">
       <h2>تفاصيل المناسبة</h2>
-      <p id="dateLine" style="font-size:18px;font-weight:700;color:var(--wine-dark);">١ سبتمبر ٢٠٢٦</p>
+      <p id="dateLine" style="font-size:18px;font-weight:700;color:var(--wine-dark);">٢ سبتمبر ٢٠٢٦</p>
       <p class="muted">قاعة فينسيا - إيتاي البارود</p>
       <a class="btn gold" href="https://maps.app.goo.gl/VXvuWGqxNxALmSEp6" target="_blank" rel="noopener">📍 الموقع على الخريطة</a>
     </div>
@@ -416,7 +416,7 @@
 
   <footer>
     <div class="foot-mono">أمجد &amp; سمر</div>
-    ١ سبتمبر ٢٠٢٦ · قاعة فينسيا، إيتاي البارود
+    ٢ سبتمبر ٢٠٢٦ · قاعة فينسيا، إيتاي البارود
     <br>
     <button class="foot-link" onclick="openAdminPanel()">عرض الردود والرسائل (للعروسين فقط)</button>
   </footer>
@@ -525,11 +525,11 @@ function openInvite(){
 }
 
 /* ---------------- event date ---------------- */
-const EVENT_DATE = new Date(2026, 8, 1, 19, 0, 0); // 1 Sep 2026, 7:00 PM (assumed time)
+const EVENT_DATE = new Date(2026, 8, 2, 20, 0, 0); // 2 Sep 2026, 8:00 PM
 
 (function setDateLine(){
   const weekday = new Intl.DateTimeFormat('ar-EG', { weekday:'long' }).format(EVENT_DATE);
-  document.getElementById('dateLine').textContent = `${weekday}، ١ سبتمبر ٢٠٢٦ — ٧:٠٠ مساءً`;
+  document.getElementById('dateLine').textContent = `${weekday}، ٢ سبتمبر ٢٠٢٦ — ٨:٠٠ مساءً`;
 })();
 
 function updateCountdown(){
@@ -582,7 +582,7 @@ function showToast(msg){
 async function shareInvite(){
   const shareData = {
     title: 'دعوة زفاف أمجد وسمر',
-    text: 'يسعدنا حضوركم حفل زفاف أمجد وسمر - ١ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود',
+    text: 'يسعدنا حضوركم حفل زفاف أمجد وسمر - ٢ سبتمبر ٢٠٢٦ - قاعة فينسيا، إيتاي البارود',
     url: location.href
   };
   try{
